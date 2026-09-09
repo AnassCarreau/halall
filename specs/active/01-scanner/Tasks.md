@@ -41,14 +41,14 @@
 - [x] T034 [US-2] [RF-004] Implement `src/infrastructure/gemini/gemini-ocr.ts` + `src/app/api/ocr/route.ts`.
 
 ## Implementation — UI (US-1, RF-001/RF-003/RF-005)
-- [ ] T040 [US-1] [RF-001] Implement `BottomNav.tsx` (3 pestañas: Escanear/Buscar/Locales) + `layout.tsx`.
-- [ ] T041 [US-1] [RF-001] Implement `ScannerView.tsx` (ZXing `decodeFromConstraints`, facingMode environment, permiso denegado → mensaje + link a /buscar).
-- [ ] T042 [US-1] [RF-005] Implement `ResultSheet.tsx` (bottom sheet: semáforo gigante, nombre, motivos, "Escanear otro" reanuda cámara).
-- [ ] T043 [US-1] [RF-002] Wire `src/app/page.tsx` → ScannerView + fetch `/api/scan` + vibración.
-- [ ] T044 [US-1] [RF-003] Implement `src/app/buscar/page.tsx` (búsqueda por nombre con resultados semáforo) y `src/app/locales/page.tsx` (Próximamente).
+- [x] T040 [US-1] [RF-001] Implement `BottomNav.tsx` (3 pestañas: Escanear/Buscar/Locales) + `layout.tsx`.
+- [x] T041 [US-1] [RF-001] Implement `ScannerView.tsx` (ZXing `decodeFromConstraints`, facingMode environment, permiso denegado → mensaje + link a /buscar).
+- [x] T042 [US-1] [RF-005] Implement `ResultSheet.tsx` (bottom sheet: semáforo gigante, nombre, motivos, "Escanear otro" reanuda cámara).
+- [x] T043 [US-1] [RF-002] Wire `src/app/page.tsx` → ScannerView + fetch `/api/scan` + vibración.
+- [x] T044 [US-1] [RF-003] Implement `src/app/buscar/page.tsx` (búsqueda por nombre con resultados semáforo) y `src/app/locales/page.tsx` (Próximamente).
 
 ## Finalization
-- [ ] T900 Run `npm run lint && npx tsc --noEmit && npm test && npm run build`; log evidence in `Verify.md`.
+- [x] T900 Run `npm run lint && npx tsc --noEmit && npm test && npm run build`; log evidence in `Verify.md`.
 - [ ] T901 Smoke test real: `npm run dev` + página `/`, `/buscar`, `/locales`, `/api/scan?barcode=3017620422003` (vía OFF en vivo).
 - [ ] T902 Independent review (subagent Reviewer) → fill `Verify.md` → human approval (Anass).
 - [ ] T903 Await `DATABASE_URL` (Supabase) + `GOOGLE_API_KEY` de Anass para aplicar migración y activar OCR real.
