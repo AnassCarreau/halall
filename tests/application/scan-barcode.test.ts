@@ -3,7 +3,7 @@ import { scanBarcode } from '@/application/scan-barcode';
 import type { ProductsRepository } from '@/infrastructure/db/products-repo';
 import type { OffClient, OffProduct } from '@/infrastructure/off/off-client';
 import type { Product } from '@/infrastructure/db/schema';
-import type { ClassificationResult } from '@/domain/classification/types';
+import type { ClassificationResult, IngredientConflict } from '@/domain/classification/types';
 
 describe('scanBarcode use case', () => {
   const dummyCachedProduct: Product = {
@@ -167,7 +167,7 @@ describe('scanBarcode use case', () => {
     expect(result.found).toBe(true);
     if (result.found) {
       expect(result.status).toBe('DOUBTFUL');
-      expect(result.conflicts.some((c: any) => c.code === 'e120')).toBe(true);
+      expect(result.conflicts.some((c: IngredientConflict) => c.code === 'e120')).toBe(true);
     }
   });
 

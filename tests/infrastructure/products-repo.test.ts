@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DrizzleProductsRepository } from '@/infrastructure/db/products-repo';
 import type { Product, NewProduct } from '@/infrastructure/db/schema';
+import type { DbType } from '@/infrastructure/db/client';
 
 describe('ProductsRepository (fail-soft behavior)', () => {
   beforeEach(() => {
@@ -40,7 +41,7 @@ describe('ProductsRepository (fail-soft behavior)', () => {
       insert: vi.fn().mockImplementation(() => {
         throw new Error('Timeout');
       }),
-    } as any;
+    } as unknown as DbType;
 
     const repo = new DrizzleProductsRepository(mockDb);
 
@@ -71,7 +72,7 @@ describe('ProductsRepository (fail-soft behavior)', () => {
           }),
         }),
       }),
-    } as any;
+    } as unknown as DbType;
 
     const repo = new DrizzleProductsRepository(mockDb);
     const result = await repo.findByBarcode('8410000000001');
@@ -86,7 +87,10 @@ describe('ProductsRepository (fail-soft behavior)', () => {
       source: 'OFF',
     };
     const returnedProd: Product = {
-      ...newProd,
+      barcode: newProd.barcode,
+      name: newProd.name,
+      status: newProd.status,
+      source: newProd.source ?? 'OFF',
       brand: null,
       hasMeat: false,
       conflicts: [],
@@ -103,7 +107,7 @@ describe('ProductsRepository (fail-soft behavior)', () => {
           }),
         }),
       }),
-    } as any;
+    } as unknown as DbType;
 
     const repo = new DrizzleProductsRepository(mockDb);
     const result = await repo.upsert(newProd);

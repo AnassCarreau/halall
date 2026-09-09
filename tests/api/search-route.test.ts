@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Product } from '@/infrastructure/db/schema';
 
 vi.mock('@/infrastructure/db/products-repo', () => ({
   DrizzleProductsRepository: vi.fn(),
@@ -49,7 +50,7 @@ describe('GET /api/search', () => {
     ];
 
     const { defaultProductsRepo } = await import('@/infrastructure/db/products-repo');
-    vi.mocked(defaultProductsRepo.searchByName).mockResolvedValue(mockProducts as any);
+    vi.mocked(defaultProductsRepo.searchByName).mockResolvedValue(mockProducts as Product[]);
 
     const { GET } = await import('@/app/api/search/route');
     const req = new Request('http://localhost:3000/api/search?q=yogur');
