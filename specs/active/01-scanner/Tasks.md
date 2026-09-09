@@ -11,18 +11,18 @@
 - [x] T002 Baseline check: `npm run lint` and `npm run build` exit 0 on scaffold.
 
 ## Implementation — Domain (US-1/US-2, motor determinista)
-- [ ] T010 [US-1] [RF-005] Write failing tests for ingredient text normalization in `tests/domain/normalize.test.ts`.
+- [x] T010 [US-1] [RF-005] Write failing tests for ingredient text normalization in `tests/domain/normalize.test.ts`.
   - *Done when:* tests fail (missing module).
-- [ ] T011 [US-1] [RF-005] Implement `src/domain/classification/normalize.ts` (lowercase, sin acentos, E-numbers canónicos).
+- [x] T011 [US-1] [RF-005] Implement `src/domain/classification/normalize.ts` (lowercase, sin acentos, E-numbers canónicos).
   - *Done when:* `npm test` passes.
-- [ ] T012 [US-1] [RF-005] Write failing tests for haram detection (cerdo, alcohol, sangre, vinagre de vino vs vino) in `tests/domain/classify-haram.test.ts`.
-- [ ] T013 [US-1] [RF-005] Implement dictionaries + haram branch in `src/domain/classification/classify.ts`.
-- [ ] T014 [US-1] [RF-005] Write failing tests for meat rule (pollo/ternera → DOUBTFUL; certificación halal → HALAL; pescado nunca dudoso) in `tests/domain/classify-meat.test.ts`.
-- [ ] T015 [US-1] [RF-005] Implement meat branch in `classify.ts`.
-- [ ] T016 [US-1] [RF-005] Write failing tests for doubtful E-numbers (E120, E441, E471 family, E920, E542, cuajo, grasa animal) in `tests/domain/classify-doubtful.test.ts`.
-- [ ] T017 [US-1] [RF-005] Implement doubtful branch in `classify.ts`.
-- [ ] T018 [US-1] [RF-005] Write failing tests for priority ordering (haram > carne > aditivos > halal) y texto vacío → DOUBTFUL in `tests/domain/classify-priority.test.ts`.
-- [ ] T019 [US-1] [RF-005] Implement priority + empty-input guard in `classify.ts`.
+- [x] T012 [US-1] [RF-005] Write failing tests for haram detection (cerdo, alcohol, sangre, vinagre de vino vs vino) in `tests/domain/classify-haram.test.ts`.
+- [x] T013 [US-1] [RF-005] Implement dictionaries + haram branch in `src/domain/classification/classify.ts`.
+- [x] T014 [US-1] [RF-005] Write failing tests for meat rule (pollo/ternera → DOUBTFUL; certificación halal → HALAL; pescado nunca dudoso) in `tests/domain/classify-meat.test.ts`.
+- [x] T015 [US-1] [RF-005] Implement meat branch in `classify.ts`.
+- [x] T016 [US-1] [RF-005] Write failing tests for doubtful E-numbers (E120, E441, E471 family, E920, E542, cuajo, grasa animal) in `tests/domain/classify-doubtful.test.ts`.
+- [x] T017 [US-1] [RF-005] Implement doubtful branch in `classify.ts`.
+- [x] T018 [US-1] [RF-005] Write failing tests for priority ordering (haram > carne > aditivos > halal) y texto vacío → DOUBTFUL in `tests/domain/classify-priority.test.ts`.
+- [x] T019 [US-1] [RF-005] Implement priority + empty-input guard in `classify.ts`.
 
 ## Implementation — Data & Integration (US-1, RF-002)
 - [ ] T020 [US-1] [RF-002] Create Drizzle schema `src/infrastructure/db/schema.ts` (products: barcode PK, name, brand, status, conflicts[], source, timestamps) + `drizzle.config.ts`.
