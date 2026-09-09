@@ -9,8 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
-    "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -31,7 +31,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^5.0.0",
-    "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
