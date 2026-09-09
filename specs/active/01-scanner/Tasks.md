@@ -25,20 +25,20 @@
 - [x] T019 [US-1] [RF-005] Implement priority + empty-input guard in `classify.ts`.
 
 ## Implementation — Data & Integration (US-1, RF-002)
-- [ ] T020 [US-1] [RF-002] Create Drizzle schema `src/infrastructure/db/schema.ts` (products: barcode PK, name, brand, status, conflicts[], source, timestamps) + `drizzle.config.ts`.
+- [x] T020 [US-1] [RF-002] Create Drizzle schema `src/infrastructure/db/schema.ts` (products: barcode PK, name, brand, status, conflicts[], source, timestamps) + `drizzle.config.ts`.
   - *Done when:* `npm run db:generate` produces migration SQL.
-- [ ] T021 [US-1] [RF-002] Implement lazy db client + products repo (`client.ts`, `products-repo.ts`) — fail-soft sin DATABASE_URL.
-- [ ] T022 [US-1] [RF-002] Write failing tests for OFF client mapping (v2 payload, not-found, timeout) in `tests/infrastructure/off-client.test.ts`.
-- [ ] T023 [US-1] [RF-002] Implement `src/infrastructure/off/off-client.ts`.
-- [ ] T024 [US-1] [RF-002] Write failing tests for use-case scan-barcode (cache hit, OFF fallback, lazy-cache write, OFF miss → null) in `tests/application/scan-barcode.test.ts`.
-- [ ] T025 [US-1] [RF-002] Implement `src/application/scan-barcode.ts` con puertos inyectados.
+- [x] T021 [US-1] [RF-002] Implement lazy db client + products repo (`client.ts`, `products-repo.ts`) — fail-soft sin DATABASE_URL.
+- [x] T022 [US-1] [RF-002] Write failing tests for OFF client mapping (v2 payload, not-found, timeout) in `tests/infrastructure/off-client.test.ts`.
+- [x] T023 [US-1] [RF-002] Implement `src/infrastructure/off/off-client.ts`.
+- [x] T024 [US-1] [RF-002] Write failing tests for use-case scan-barcode (cache hit, OFF fallback, lazy-cache write, OFF miss → null) in `tests/application/scan-barcode.test.ts`.
+- [x] T025 [US-1] [RF-002] Implement `src/application/scan-barcode.ts` con puertos inyectados.
 
 ## Implementation — API (US-1/US-2, RF-002/RF-004)
-- [ ] T030 [US-1] [RF-002] Write failing tests for `GET /api/scan` (validación barcode, found/not-found, 400) in `tests/api/scan-route.test.ts`.
-- [ ] T031 [US-1] [RF-002] Implement `src/app/api/scan/route.ts`.
-- [ ] T032 [US-1] [RF-002] Write failing tests + implement `GET /api/search` (búsqueda por nombre en cache local) in `tests/api/search-route.test.ts` + `src/app/api/search/route.ts`.
-- [ ] T033 [US-2] [RF-004] Write failing tests for `POST /api/ocr` (sin key → 503, payload grande → 413, Gemini stub → veredicto) in `tests/api/ocr-route.test.ts`.
-- [ ] T034 [US-2] [RF-004] Implement `src/infrastructure/gemini/gemini-ocr.ts` + `src/app/api/ocr/route.ts`.
+- [x] T030 [US-1] [RF-002] Write failing tests for `GET /api/scan` (validación barcode, found/not-found, 400) in `tests/api/scan-route.test.ts`.
+- [x] T031 [US-1] [RF-002] Implement `src/app/api/scan/route.ts`.
+- [x] T032 [US-1] [RF-002] Write failing tests + implement `GET /api/search` (búsqueda por nombre en cache local) in `tests/api/search-route.test.ts` + `src/app/api/search/route.ts`.
+- [x] T033 [US-2] [RF-004] Write failing tests for `POST /api/ocr` (sin key → 503, payload grande → 413, Gemini stub → veredicto) in `tests/api/ocr-route.test.ts`.
+- [x] T034 [US-2] [RF-004] Implement `src/infrastructure/gemini/gemini-ocr.ts` + `src/app/api/ocr/route.ts`.
 
 ## Implementation — UI (US-1, RF-001/RF-003/RF-005)
 - [ ] T040 [US-1] [RF-001] Implement `BottomNav.tsx` (3 pestañas: Escanear/Buscar/Locales) + `layout.tsx`.
