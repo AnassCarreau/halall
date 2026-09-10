@@ -3,29 +3,31 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Camera, Search, MapPin } from "lucide-react";
+import { useTranslation } from "@/i18n/context";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const tabs = [
     {
       href: "/",
-      label: "Escanear",
+      label: t.nav.scan,
       icon: Camera,
       active: pathname === "/",
     },
     {
       href: "/buscar",
-      label: "Buscar",
+      label: t.nav.search,
       icon: Search,
       active: pathname === "/buscar",
     },
     {
       href: "/locales",
-      label: "Locales",
+      label: t.nav.places,
       icon: MapPin,
       active: pathname === "/locales",
-      badge: "Pronto",
+      badge: t.nav.soon,
     },
   ];
 
@@ -47,7 +49,7 @@ export function BottomNav() {
               <div className="relative">
                 <Icon className={`w-5 h-5 ${tab.active ? "scale-110" : ""} transition-transform`} />
                 {tab.badge && (
-                  <span className="absolute -top-1 -right-4 bg-emerald-950 text-emerald-400 text-[10px] font-bold px-1 rounded-full border border-emerald-800/50">
+                  <span className="absolute -top-1 -right-4 rtl:-left-4 rtl:right-auto bg-emerald-950 text-emerald-400 text-[10px] font-bold px-1 rounded-full border border-emerald-800/50">
                     {tab.badge}
                   </span>
                 )}

@@ -206,4 +206,121 @@ describe('scanBarcode use case', () => {
       expect(result.status).toBe('HARAM');
     }
   });
+
+  describe('Natural Halal Categories fallback', () => {
+    it('classifies product with empty ingredients and natural category tag as HALAL', async () => {
+      const offProduct: OffProduct = {
+        barcode: '8410000000010',
+        name: 'Agua Mineral Natural 1.5L',
+        brand: 'Bezoya',
+        ingredientsText: '',
+        categoriesTags: ['en:beverages', 'en:waters', 'en:spring-waters'],
+        isCertifiedHalal: false,
+      };
+
+      const repo = createMockRepo();
+      const offClient = createMockOffClient({
+        getProduct: vi.fn().mockResolvedValue(offProduct),
+      });
+
+      const result = await scanBarcode('8410000000010', { repo, offClient });
+
+      expect(result.found).toBe(true);
+      if (result.found) {
+        expect(result.status).toBe('HALAL');
+        expect(result.hasMeat).toBe(false);
+        expect(result.conflicts).toHaveLength(0);
+        expect(result.explanation).toBe('Alimento o agua natural sin aditivos añadidos');
+        expect(result.ingredientsText).toBe('Agua Mineral Natural 1.5L');
+      }
+
+      expect(repo.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          barcode: '8410000000010',
+          status: 'HALAL',
+          explanation: 'Alimento o agua natural sin aditivos añadidos',
+          ingredientsText: 'Agua Mineral Natural 1.5L',
+        })
+      );
+    });
+
+    it('classifies fresh vegetables or fruits with empty ingredients as HALAL', async () => {
+      const offProduct: OffProduct = {
+        barcode: '8410000000011',
+        name: 'Tomates de rama',
+        brand: null,
+        ingredientsText: '  ',
+        categoriesTags: ['en:plant-based-foods', 'en:fresh-vegetables', 'en:tomatoes'],
+        isCertifiedHalal: false,
+      };
+
+      const repo = createMockRepo();
+      const offClient = createMockOffClient({
+        getProduct: vi.fn().mockResolvedValue(offProduct),
+      });
+
+      const result = await scanBarcode('8410000000011', { repo, offClient });
+
+      expect(result.found).toBe(true);
+      if (result.found) {
+        expect(result.status).toBe('HALAL');
+        expect(result.hasMeat).toBe(false);
+        expect(result.conflicts).toHaveLength(0);
+        expect(result.explanation).toBe('Alimento o agua natural sin aditivos añadidos');
+        expect(result.ingredientsText).toBe('Tomates de rama');
+      }
+    });
+
+    it('falls back to DOUBTFUL if ingredients are empty and categories do not match natural halal', async () => {
+      const offProduct: OffProduct = {
+        barcode: '8410000000012',
+        name: 'Snack Desconocido',
+        brand: 'Misterio',
+        ingredientsText: '',
+        categoriesTags: ['en:snacks', 'en:processed-foods'],
+        isCertifiedHalal: false,
+      };
+
+      const repo = createMockRepo();
+      const offClient = createMockOffClient({
+        getProduct: vi.fn().mockResolvedValue(offProduct),
+      });
+
+      const result = await scanBarcode('8410000000012', { repo, offClient });
+
+      expect(result.found).toBe(true);
+      if (result.found) {
+        expect(result.status).toBe('DOUBTFUL');
+        expect(result.explanation).toContain('Ingredientes no especificados');
+      }
+    });
+
+    it('returns ingredientsText from cached DB product', async () => {
+      const cachedWithIngredients: Product = {
+        barcode: '8410000000013',
+        name: 'Zumo de Naranja',
+        brand: 'Don Simón',
+        status: 'HALAL',
+        hasMeat: false,
+        conflicts: [],
+        explanation: 'Sin aditivos problemáticos',
+        ingredientsText: '100% zumo de naranja exprimida',
+        source: 'DB',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const repo = createMockRepo({
+        findByBarcode: vi.fn().mockResolvedValue(cachedWithIngredients),
+      });
+      const offClient = createMockOffClient();
+
+      const result = await scanBarcode('8410000000013', { repo, offClient });
+
+      expect(result.found).toBe(true);
+      if (result.found) {
+        expect(result.ingredientsText).toBe('100% zumo de naranja exprimida');
+      }
+    });
+  });
 });

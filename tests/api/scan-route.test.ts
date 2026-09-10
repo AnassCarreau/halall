@@ -32,7 +32,7 @@ describe('GET /api/scan', () => {
     expect(resLong.status).toBe(400);
   });
 
-  it('returns 200 with product details when barcode is found', async () => {
+  it('returns 200 with product details including ingredientsText when barcode is found', async () => {
     const mockResult: scanUseCase.ScanResult = {
       found: true,
       barcode: '8410000000001',
@@ -42,6 +42,7 @@ describe('GET /api/scan', () => {
       hasMeat: false,
       conflicts: [],
       explanation: 'No se han detectado ingredientes problemáticos',
+      ingredientsText: 'Leche entera pasteurizada, fermentos lácticos',
       source: 'OFF',
     };
 
@@ -54,6 +55,7 @@ describe('GET /api/scan', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toEqual(mockResult);
+    expect(body.ingredientsText).toBe('Leche entera pasteurizada, fermentos lácticos');
     expect(scanUseCase.scanBarcode).toHaveBeenCalledWith('8410000000001');
   });
 

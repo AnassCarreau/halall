@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, CheckCircle2, AlertTriangle, XCircle, Loader2 } from "lucide-react";
 import type { HalalStatus } from "@/domain/classification/types";
+import { useTranslation } from "@/i18n/context";
 
 interface SearchItem {
   barcode: string;
@@ -13,6 +14,7 @@ interface SearchItem {
 }
 
 export default function BuscarPage() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,11 +40,11 @@ export default function BuscarPage() {
   };
 
   return (
-    <main className="flex-1 bg-neutral-950 text-neutral-100 min-h-screen px-4 pt-8 pb-24 max-w-md mx-auto w-full">
+    <main className="flex-1 bg-neutral-950 text-neutral-100 min-h-screen px-4 pt-6 pb-24 max-w-md mx-auto w-full">
       <header className="mb-6">
-        <h1 className="text-2xl font-black tracking-tight text-white">Buscar producto</h1>
+        <h1 className="text-2xl font-black tracking-tight text-white">{t.search.title}</h1>
         <p className="text-xs text-neutral-400 mt-1">
-          Busca por nombre de producto o marca española
+          {t.search.subtitle}
         </p>
       </header>
 
@@ -51,28 +53,28 @@ export default function BuscarPage() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Ej: yogur fresa, galletas digestive..."
-          className="w-full py-3.5 pl-11 pr-4 bg-neutral-900 border border-neutral-800 rounded-2xl text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-emerald-500 transition-colors"
+          placeholder={t.search.placeholder}
+          className="w-full py-3.5 pl-11 pr-4 rtl:pl-4 rtl:pr-11 bg-neutral-900 border border-neutral-800 rounded-2xl text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-emerald-500 transition-colors"
         />
-        <Search className="w-5 h-5 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search className="w-5 h-5 text-neutral-400 absolute left-3.5 rtl:left-auto rtl:right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         <button
           type="submit"
           className="sr-only"
         >
-          Buscar
+          {t.nav.search}
         </button>
       </form>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-12 text-neutral-400">
           <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
-          <p className="text-xs mt-3">Buscando productos indexados...</p>
+          <p className="text-xs mt-3">{t.search.searching}</p>
         </div>
       ) : hasSearched && results.length === 0 ? (
         <div className="text-center py-12 text-neutral-400 bg-neutral-900/40 rounded-2xl p-6 border border-neutral-800/60">
-          <p className="text-sm font-medium text-neutral-300">No encontramos coincidencias</p>
-          <p className="text-xs text-neutral-500 mt-1">
-            Si tienes el producto físico delante, usa la cámara para escanear el código de barras o su etiqueta.
+          <p className="text-sm font-medium text-neutral-300">{t.search.noResultsTitle}</p>
+          <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
+            {t.search.noResultsDesc}
           </p>
         </div>
       ) : (
@@ -93,20 +95,20 @@ export default function BuscarPage() {
               <div className="shrink-0 flex items-center gap-1.5">
                 {item.status === "HALAL" && (
                   <span className="flex items-center gap-1 px-2 py-1 bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 text-[11px] font-bold rounded-lg">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    Halal
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    {t.search.badgeHalal}
                   </span>
                 )}
                 {item.status === "HARAM" && (
                   <span className="flex items-center gap-1 px-2 py-1 bg-rose-950/80 border border-rose-800/80 text-rose-300 text-[11px] font-bold rounded-lg">
-                    <XCircle className="w-3.5 h-3.5 text-rose-400" />
-                    Haram
+                    <XCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                    {t.search.badgeHaram}
                   </span>
                 )}
                 {item.status === "DOUBTFUL" && (
                   <span className="flex items-center gap-1 px-2 py-1 bg-amber-950/80 border border-amber-800/80 text-amber-300 text-[11px] font-bold rounded-lg">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-                    Dudoso
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    {t.search.badgeDoubtful}
                   </span>
                 )}
               </div>

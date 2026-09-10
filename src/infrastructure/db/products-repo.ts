@@ -86,6 +86,7 @@ export class DrizzleProductsRepository implements ProductsRepository {
             hasMeat: product.hasMeat,
             conflicts: product.conflicts,
             explanation: product.explanation,
+            ingredientsText: product.ingredientsText,
             source: product.source,
             updatedAt: new Date(),
           },

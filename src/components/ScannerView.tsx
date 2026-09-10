@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { Camera, AlertCircle, Image as ImageIcon } from "lucide-react";
+import { useTranslation } from "@/i18n/context";
 
 interface ScannerViewProps {
   onScan: (barcode: string) => void;
@@ -11,9 +13,10 @@ interface ScannerViewProps {
 }
 
 export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<"denied" | "generic" | null>(null);
   const readerRef = useRef<BrowserMultiFormatReader | null>(null);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
           return;
         }
 
-        setError(null);
+        setErrorType(null);
 
         codeReader.decodeFromStream(stream, videoEl, (result) => {
           if (!active) return;
@@ -48,11 +51,8 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
         });
       } catch (err: unknown) {
         if (!active) return;
-        const msg =
-          err instanceof Error && err.name === "NotAllowedError"
-            ? "Permiso de cámara denegado. Concede acceso a la cámara para escanear."
-            : "No se pudo iniciar la cámara en este dispositivo.";
-        setError(msg);
+        const isDenied = err instanceof Error && err.name === "NotAllowedError";
+        setErrorType(isDenied ? "denied" : "generic");
       }
     }
 
@@ -80,8 +80,15 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
     reader.readAsDataURL(file);
   };
 
+  const errorMessage =
+    errorType === "denied"
+      ? t.scanner.cameraErrorDenied
+      : errorType === "generic"
+      ? t.scanner.cameraErrorGeneric
+      : null;
+
   return (
-    <div className="relative w-full h-full min-h-[calc(100vh-4rem)] bg-black flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-full h-full min-h-[calc(100vh-7.5rem)] bg-black flex flex-col items-center justify-center overflow-hidden">
       {/* Video feed */}
       <video
         ref={videoRef}
@@ -99,17 +106,17 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
           <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-emerald-400 rounded-bl-2xl -mb-1 -ml-1" />
           <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-emerald-400 rounded-br-2xl -mb-1 -mr-1" />
 
-          {/* Animated red/laser guide line */}
+          {/* Animated guide line */}
           <div className="absolute inset-x-4 top-1/2 h-0.5 bg-emerald-400/60 shadow-[0_0_8px_#34d399] animate-pulse" />
         </div>
 
-        <p className="text-white/80 text-xs font-medium mt-6 px-4 py-1.5 bg-black/40 backdrop-blur-md rounded-full">
-          Apunta al código de barras del producto
+        <p className="text-white/80 text-xs font-medium mt-6 px-4 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-center max-w-xs">
+          {t.scanner.pointBarcode}
         </p>
       </div>
 
       {/* Floating manual OCR / upload button */}
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-4 right-4 rtl:left-4 rtl:right-auto z-20">
         <input
           ref={fileInputRef}
           type="file"
@@ -122,20 +129,21 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
           type="button"
           onClick={() => fileInputRef.current?.click()}
           className="bg-neutral-900/80 backdrop-blur-md text-neutral-200 border border-neutral-700/80 p-2.5 rounded-full hover:bg-neutral-800 transition-colors shadow-lg cursor-pointer"
-          title="Tomar foto de ingredientes (OCR)"
+          title={t.scanner.ocrTooltip}
+          aria-label={t.scanner.ocrTooltip}
         >
           <ImageIcon className="w-5 h-5" />
         </button>
       </div>
 
       {/* Error / Permission fallback screen */}
-      {error && (
+      {errorMessage && (
         <div className="absolute inset-0 bg-neutral-950/95 z-30 flex flex-col items-center justify-center p-6 text-center text-neutral-200">
           <div className="w-14 h-14 bg-rose-950/60 border border-rose-800/80 rounded-2xl flex items-center justify-center text-rose-400 mb-4">
             <AlertCircle className="w-7 h-7" />
           </div>
-          <h3 className="text-lg font-bold">Cámara no disponible</h3>
-          <p className="text-xs text-neutral-400 mt-2 max-w-xs leading-relaxed">{error}</p>
+          <h3 className="text-lg font-bold">{t.scanner.cameraErrorTitle}</h3>
+          <p className="text-xs text-neutral-400 mt-2 max-w-xs leading-relaxed">{errorMessage}</p>
 
           <div className="mt-6 flex flex-col w-full max-w-xs gap-2.5">
             <button
@@ -144,14 +152,14 @@ export function ScannerView({ onScan, onPhotoTaken, paused }: ScannerViewProps) 
               className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-950/50"
             >
               <Camera className="w-4 h-4" />
-              Subir o tomar foto de ingredientes
+              {t.scanner.uploadOrPhoto}
             </button>
-            <a
+            <Link
               href="/buscar"
               className="w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-xl text-xs font-medium text-center"
             >
-              Buscar producto por nombre
-            </a>
+              {t.scanner.searchByName}
+            </Link>
           </div>
         </div>
       )}

@@ -38,7 +38,10 @@ export async function POST(request: Request): Promise<Response> {
     const classification = classify(ingredientsText);
 
     return NextResponse.json({
+      found: true,
+      name: 'Ingredientes escaneados (OCR)',
       ingredients: ingredientsText,
+      ingredientsText,
       status: classification.status,
       hasMeat: classification.hasMeat,
       conflicts: classification.conflicts,

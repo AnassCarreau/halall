@@ -9,6 +9,7 @@ export const products = pgTable('products', {
   hasMeat: boolean('has_meat').default(false).notNull(),
   conflicts: jsonb('conflicts').$type<IngredientConflict[]>().default([]).notNull(),
   explanation: text('explanation'),
+  ingredientsText: text('ingredients_text'),
   source: text('source').notNull().default('OFF'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

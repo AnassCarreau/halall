@@ -3,6 +3,7 @@ export interface OffProduct {
   name: string;
   brand: string | null;
   ingredientsText: string;
+  categoriesTags: string[];
   isCertifiedHalal: boolean;
 }
 
@@ -84,6 +85,10 @@ export class OpenFoodFactsClient implements OffClient {
       const rawLabels = typeof product.labels === 'string' ? product.labels : '';
       const hasHalalLabel = rawLabels.toLowerCase().includes('halal');
 
+      const categoriesTags: string[] = Array.isArray(product.categories_tags)
+        ? product.categories_tags.map((tag: unknown) => String(tag).toLowerCase())
+        : [];
+
       const isCertifiedHalal = hasHalalTag || hasHalalLabel;
 
       return {
@@ -91,6 +96,7 @@ export class OpenFoodFactsClient implements OffClient {
         name,
         brand,
         ingredientsText,
+        categoriesTags,
         isCertifiedHalal,
       };
     } catch {

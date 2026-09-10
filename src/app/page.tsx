@@ -9,6 +9,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [paused, setPaused] = useState(false);
   const isScanningRef = useRef(false);
+  const ocrFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleScan = useCallback(async (barcode: string) => {
     if (isScanningRef.current) return;
@@ -58,6 +59,18 @@ export default function Home() {
     }
   }, []);
 
+  const handleOcrFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      handlePhotoTaken(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleClose = () => {
     setResult(null);
     setLoading(false);
@@ -66,7 +79,15 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex flex-col flex-1 h-full min-h-screen bg-black overflow-hidden safe-area-pb">
+    <main className="relative flex flex-col flex-1 h-full min-h-[calc(100vh-7.5rem)] bg-black overflow-hidden safe-area-pb">
+      <input
+        ref={ocrFileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleOcrFileChange}
+        className="hidden"
+      />
       <ScannerView
         onScan={handleScan}
         onPhotoTaken={handlePhotoTaken}
@@ -76,6 +97,7 @@ export default function Home() {
         result={result}
         loading={loading}
         onClose={handleClose}
+        onTriggerOcr={() => ocrFileInputRef.current?.click()}
       />
     </main>
   );

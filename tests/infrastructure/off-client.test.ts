@@ -48,6 +48,7 @@ describe('OpenFoodFactsClient', () => {
       name: 'Galletas de Chocolate',
       brand: 'Gullón',
       ingredientsText: 'Harina de trigo, azúcar, cacao en polvo, aceite de girasol',
+      categoriesTags: [],
       isCertifiedHalal: false,
     });
   });
@@ -167,5 +168,32 @@ describe('OpenFoodFactsClient', () => {
 
     const product = await client.getProduct('8410000000001');
     expect(product).toBeNull();
+  });
+
+  it('extracts categories_tags as lowercased string array', async () => {
+    const mockResponse = {
+      status: 1,
+      code: '8410000000005',
+      product: {
+        product_name: 'Agua Mineral Natural',
+        categories_tags: ['EN:Waters', 'En:Spring-Waters', 'en:Mineral-Waters'],
+      },
+    };
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => mockResponse,
+      })
+    );
+
+    const product = await client.getProduct('8410000000005');
+    expect(product?.categoriesTags).toEqual([
+      'en:waters',
+      'en:spring-waters',
+      'en:mineral-waters',
+    ]);
   });
 });

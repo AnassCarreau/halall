@@ -75,8 +75,10 @@ describe('POST /api/ocr', () => {
 
     expect(res.status).toBe(200);
     const body = await res.json();
+    expect(body.found).toBe(true);
     expect(body.status).toBeDefined();
     expect(body.ingredients).toBeDefined();
+    expect(body.ingredientsText).toBe('Harina de trigo, agua, sal');
 
     delete process.env.GOOGLE_API_KEY;
   });

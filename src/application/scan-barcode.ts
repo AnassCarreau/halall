@@ -13,6 +13,7 @@ export interface ScanResultFound {
   hasMeat: boolean;
   conflicts: IngredientConflict[];
   explanation?: string | null;
+  ingredientsText?: string | null;
   source: string;
 }
 
@@ -21,6 +22,25 @@ export interface ScanResultNotFound {
 }
 
 export type ScanResult = ScanResultFound | ScanResultNotFound;
+
+export const NATURAL_HALAL_CATEGORIES: ReadonlyArray<string> = [
+  'en:waters',
+  'en:spring-waters',
+  'en:mineral-waters',
+  'en:natural-mineral-waters',
+  'en:fresh-fruits',
+  'en:fruits',
+  'en:fresh-vegetables',
+  'en:vegetables',
+  'en:tomatoes',
+  'en:raw-tomatoes',
+  'en:legumes',
+  'en:pulses',
+  'en:grains',
+  'en:rice',
+  'en:salts',
+  'en:sea-salts',
+];
 
 export interface ScanBarcodeDependencies {
   repo?: ProductsRepository;
@@ -64,6 +84,7 @@ export async function scanBarcode(
         hasMeat: cached.hasMeat,
         conflicts: cached.conflicts,
         explanation: cached.explanation,
+        ingredientsText: cached.ingredientsText,
         source: cached.source || 'DB',
       };
     }
@@ -77,20 +98,49 @@ export async function scanBarcode(
     return { found: false };
   }
 
-  // 3. Classify ingredients
-  const classification = classifyEngine(offProduct.ingredientsText, {
-    isCertifiedHalal: offProduct.isCertifiedHalal,
-  });
+  // 3. Classify ingredients or check natural halal categories
+  const rawIngredients = offProduct.ingredientsText?.trim() || '';
+  const isIngredientsEmpty = rawIngredients.length < 3;
+
+  let status: HalalStatus;
+  let hasMeat: boolean;
+  let conflicts: IngredientConflict[];
+  let explanation: string | null;
+  let finalIngredientsText: string;
+
+  const isNaturalHalal =
+    isIngredientsEmpty &&
+    (offProduct.categoriesTags ?? []).some((tag) =>
+      NATURAL_HALAL_CATEGORIES.includes(tag.toLowerCase())
+    );
+
+  if (isNaturalHalal) {
+    status = 'HALAL';
+    hasMeat = false;
+    conflicts = [];
+    explanation = 'Alimento o agua natural sin aditivos añadidos';
+    finalIngredientsText = offProduct.name;
+  } else {
+    const classification = classifyEngine(offProduct.ingredientsText, {
+      isCertifiedHalal: offProduct.isCertifiedHalal,
+    });
+    status = classification.status;
+    hasMeat = classification.hasMeat;
+    conflicts = classification.conflicts;
+    explanation = classification.explanation;
+    finalIngredientsText = offProduct.ingredientsText;
+  }
 
   // 4. Lazy cache write to DB
   const newProduct: NewProduct = {
     barcode: offProduct.barcode,
     name: offProduct.name,
     brand: offProduct.brand,
-    status: classification.status,
-    hasMeat: classification.hasMeat,
-    conflicts: classification.conflicts,
-    explanation: classification.explanation,
+    status,
+    hasMeat,
+    conflicts,
+    explanation,
+    ingredientsText: finalIngredientsText,
     source: 'OFF',
   };
 
@@ -105,10 +155,11 @@ export async function scanBarcode(
     barcode: offProduct.barcode,
     name: offProduct.name,
     brand: offProduct.brand,
-    status: classification.status,
-    hasMeat: classification.hasMeat,
-    conflicts: classification.conflicts,
-    explanation: classification.explanation,
+    status,
+    hasMeat,
+    conflicts,
+    explanation,
+    ingredientsText: finalIngredientsText,
     source: 'OFF',
   };
 }
