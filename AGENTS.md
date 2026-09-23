@@ -16,24 +16,26 @@ If two sources conflict: stop, quote the conflict, and request a human decision.
 - Behavior: `specs/NNN-slug/spec.md`.
 - Decisions: `clarify.md` and `plan.md` for that feature.
 - Implementation State: Git, `tasks.md`, CI, and `verify.md`; never chat context alone.
+- Marketing & Growth Playbooks: `/data/ai-studio/vault/1-wiki/marketing/playbooks/` (consult index at `/data/ai-studio/vault/1-wiki/marketing/AGENTS.md` for CRO, onboarding, copy, SEO, and launch).
 - Secrets: Secret manager or environment variables; never versioned files or logs.
 
 ## Stack & Key Directories
-- Language/Runtime: [VERSION]
-- Framework: [NAME]
-- Data Store: [NAME or N/A]
-- Testing: [NAME]
-- Key Paths: [PATH — Purpose]
+- Language/Runtime: TypeScript 5 / Node.js
+- Framework: Next.js 16.3.4 (App Router) + React 19.2.8 + Tailwind CSS 4
+- Data Store: Supabase (PostgreSQL) + Drizzle ORM
+- Testing: Vitest 5.0.0
+- Key Paths: `src/` (source code), `specs/` (SDD features), `docs/` (constitution)
 
 ## Mandatory Commands
-| Phase | Command | Mandatory Before Declaring Done |
-|---|---|---|
-| Dependencies | `[command]` | If dependencies change |
-| Tests | `[command]` | Yes |
-| Lint / Format | `[command]` | Yes |
-| Typecheck | `[command]` | If applicable |
-| Build | `[command]` | Yes |
-| Smoke / Manual Test | `[command or steps]` | If applicable |
+| Phase | Command | Scope S (Trivial/Fix/Docs) | Scope M / L (Feature/Refactor) |
+|---|---|---|---|
+| Dependencies | `npm install` | Si cambian dependencias | Si cambian dependencias |
+| Tests | `npm run test` | Test del archivo modificado | Suite completa (`npm run test`) |
+| Lint / Format | `npm run lint` | Opcional si solo toca docs | Sí (`npm run lint`) |
+| Typecheck | `npx tsc --noEmit` | Sí (si toca código TypeScript) | Sí (`npx tsc --noEmit`) |
+| Build | `npm run build` | Opcional (solo si toca config/rutas) | Sí (`npm run build` obligatorio) |
+| DB Generate | `npm run db:generate` | Autónomo (genera SQL local en drizzle/) | Autónomo (genera SQL local en drizzle/) |
+| DB Migrate | `npm run db:migrate` | Requiere Aprobación (DDL Supabase) | Requiere Aprobación (DDL Supabase) |
 
 Never output "passed" without providing the executed command and its raw output.
 
@@ -46,11 +48,11 @@ Never output "passed" without providing the executed command and its raw output.
 - Record any decision impacting scope, data, security, or public API before implementation.
 
 ## Project Conventions
-- Naming: [CONVENTIONS]
-- Tests: [LOCATION AND PATTERN]
-- Errors & Logs: [CONVENTIONS]
-- Dependencies: [POLICY]
-- Compatibility & Migrations: [POLICY]
+- Naming: kebab-case for files and folders; PascalCase for React components; camelCase for functions, hooks, and database schemas.
+- Tests: Unit tests in `tests/` with `*.test.ts` pattern using Vitest. Domain logic and classification rules must have 100% test coverage.
+- Errors & Logs: Tolerant domain error handling returning typed results `{ success, data, error }`; never crash the UI on barcode or OCR network failures.
+- Dependencies: 0,00 € operating cost policy (Phase 1). Prefer pure TypeScript and Web standard APIs over external packages.
+- Compatibility & Migrations: Drizzle ORM on Supabase PostgreSQL. Schema changes must be generated via Drizzle-Kit and committed to `drizzle/`.
 
 ## Hard Boundaries
 - Do not add dependencies, alter public contracts, migrate schemas, or change infrastructure without a plan and explicit approval.
