@@ -150,25 +150,51 @@ export function ResultSheet({
                 <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
                   {t.result.identifiedIngredients}
                 </h4>
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {result.conflicts.map((conflict, idx) => (
                     <div
                       key={`${conflict.name}-${idx}`}
-                      className="p-2.5 bg-neutral-950/60 rounded-xl border border-neutral-800 flex items-start justify-between gap-3 text-xs"
+                      className="p-3 bg-neutral-950/70 rounded-2xl border border-neutral-800 space-y-2 text-xs"
                     >
-                      <div>
-                        <span className="font-semibold text-neutral-200">{conflict.name}</span>
-                        <p className="text-neutral-400 text-[11px] mt-0.5">{conflict.reason}</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <span className="font-semibold text-neutral-100">{conflict.name}</span>
+                          <p className="text-neutral-400 text-[11px] mt-0.5">{conflict.reason}</p>
+                        </div>
+                        <span
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${
+                            conflict.severity === "HARAM"
+                              ? "bg-rose-950 text-rose-300 border border-rose-800/60"
+                              : "bg-amber-950 text-amber-300 border border-amber-800/60"
+                          }`}
+                        >
+                          {conflict.severity}
+                        </span>
                       </div>
-                      <span
-                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${
-                          conflict.severity === "HARAM"
-                            ? "bg-rose-950 text-rose-300 border border-rose-800/60"
-                            : "bg-amber-950 text-amber-300 border border-amber-800/60"
-                        }`}
-                      >
-                        {conflict.severity}
-                      </span>
+
+                      {/* Explicación profunda de la duda */}
+                      {conflict.whyDoubt && (
+                        <div className="p-2.5 bg-amber-950/20 border border-amber-900/40 rounded-xl text-[11px] text-amber-200/90 leading-relaxed">
+                          <strong className="text-amber-300">¿Por qué se duda?:</strong> {conflict.whyDoubt}
+                        </div>
+                      )}
+
+                      {/* Botón para copiar pregunta al fabricante */}
+                      {conflict.questionToManufacturer && (
+                        <div className="pt-1 flex items-center justify-between gap-2 border-t border-neutral-800/60 text-[11px]">
+                          <span className="text-neutral-500 italic truncate">Pregunta al fabricante disponible</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(conflict.questionToManufacturer!);
+                              alert("¡Pregunta técnica copiada al portapapeles! Puedes pegarla en un email o mensaje a la marca.");
+                            }}
+                            className="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold rounded-lg shrink-0 transition"
+                          >
+                            Copiar Consulta
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -5,6 +5,8 @@ export interface IngredientConflict {
   name: string;
   severity: 'HARAM' | 'DOUBTFUL';
   reason: string;
+  whyDoubt?: string;
+  questionToManufacturer?: string;
 }
 
 export interface ClassificationResult {

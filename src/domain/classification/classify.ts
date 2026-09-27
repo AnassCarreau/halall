@@ -88,6 +88,8 @@ export function classify(
         name: additive.name,
         severity: 'DOUBTFUL',
         reason: additive.reason,
+        whyDoubt: additive.whyDoubt,
+        questionToManufacturer: additive.questionToManufacturer,
       });
     }
   }
@@ -100,6 +102,8 @@ export function classify(
         name: ingredient.name,
         severity: 'DOUBTFUL',
         reason: ingredient.reason,
+        whyDoubt: ingredient.whyDoubt,
+        questionToManufacturer: ingredient.questionToManufacturer,
       });
     }
   }

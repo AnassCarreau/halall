@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, boolean, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, boolean, jsonb, timestamp, doublePrecision, integer } from 'drizzle-orm/pg-core';
 import type { HalalStatus, IngredientConflict } from '@/domain/classification/types';
 
 export const products = pgTable('products', {
@@ -15,5 +15,24 @@ export const products = pgTable('products', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+export const locales = pgTable('locales', {
+  id: varchar('id', { length: 64 }).primaryKey(),
+  name: text('name').notNull(),
+  type: varchar('type', { length: 32 }).$type<'carniceria' | 'restaurante'>().notNull(),
+  address: text('address').notNull(),
+  city: text('city').notNull(),
+  latitude: doublePrecision('latitude').notNull(),
+  longitude: doublePrecision('longitude').notNull(),
+  phone: text('phone'),
+  whatsapp: text('whatsapp'),
+  halalCertified: boolean('halal_certified').default(true).notNull(),
+  certifierName: text('certifier_name'),
+  verified: boolean('verified').default(false).notNull(),
+  googleMapsUrl: text('google_maps_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+export type Locale = typeof locales.$inferSelect;
+export type NewLocale = typeof locales.$inferInsert;
