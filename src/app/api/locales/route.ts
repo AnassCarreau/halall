@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { calculateDistanceKm } from '@/domain/geo/haversine';
+import osmLocales from '@/infrastructure/data/osm-locales.json';
 
 // Base de datos estática enriquecida inicial de carnicerías y restaurantes Halal verificados en España
 // Cobertura: Madrid, Barcelona, Valencia, Sevilla, Granada, Bilbao
@@ -130,7 +131,10 @@ export const LOCALES_SEEDS = [
     certifierName: 'Instituto Halal de España',
     verified: true,
     googleMapsUrl: 'https://maps.google.com/?q=37.1782,-3.5978',
-  }
+  },
+
+  // Inyectar datos reales extraídos de OpenStreetMap
+  ...(osmLocales as any[])
 ];
 
 export async function GET(request: Request) {
