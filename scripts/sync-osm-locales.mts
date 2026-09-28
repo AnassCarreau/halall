@@ -35,7 +35,7 @@ const CITIES_BBOX = [
   { city: 'Sevilla', bbox: '37.35,-6.02,37.42,-5.95' },
 ];
 
-async function fetchOsmForCity(city: string, bbox: string): Promise<any[]> {
+async function fetchOsmForCity(city: string, bbox: string): Promise<OsmElement[]> {
   const query = `
 [out:json][timeout:25];
 (

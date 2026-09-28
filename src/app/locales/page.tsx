@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { MapPin, Utensils, Store, Phone, ExternalLink, Navigation, CheckCircle2, MessageCircle } from "lucide-react";
 import { formatDistance } from "@/domain/geo/haversine";
-import { useTranslation } from "@/i18n/context";
 
 interface LocaleItem {
   id: string;
@@ -23,7 +22,6 @@ interface LocaleItem {
 }
 
 export default function LocalesPage() {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"todos" | "carniceria" | "restaurante">("todos");
   const [locales, setLocales] = useState<LocaleItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +52,27 @@ export default function LocalesPage() {
   };
 
   useEffect(() => {
-    fetchLocales();
+    let ignore = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/locales");
+        const data = await res.json();
+        if (!ignore) {
+          setLocales(data.locales || []);
+        }
+      } catch (e) {
+        console.error("Error cargando locales:", e);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    load();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleRequestLocation = () => {

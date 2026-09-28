@@ -4,7 +4,23 @@ import osmLocales from '@/infrastructure/data/osm-locales.json';
 
 // Base de datos estática enriquecida inicial de carnicerías y restaurantes Halal verificados en España
 // Cobertura: Madrid, Barcelona, Valencia, Sevilla, Granada, Bilbao
-export const LOCALES_SEEDS = [
+export interface LocaleSeedItem {
+  id: string;
+  name: string;
+  type: 'carniceria' | 'restaurante';
+  address: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  phone?: string | null;
+  whatsapp?: string | null;
+  halalCertified: boolean;
+  certifierName?: string | null;
+  verified: boolean;
+  googleMapsUrl?: string | null;
+}
+
+export const LOCALES_SEEDS: LocaleSeedItem[] = [
   // --- MADRID ---
   {
     id: 'mad-01',
@@ -134,7 +150,7 @@ export const LOCALES_SEEDS = [
   },
 
   // Inyectar datos reales extraídos de OpenStreetMap
-  ...(osmLocales as any[])
+  ...(osmLocales as unknown as LocaleSeedItem[])
 ];
 
 export async function GET(request: Request) {
@@ -142,7 +158,6 @@ export async function GET(request: Request) {
   const latStr = searchParams.get('lat');
   const lngStr = searchParams.get('lng');
   const type = searchParams.get('type'); // 'carniceria' | 'restaurante'
-  const radiusKm = parseFloat(searchParams.get('radius') || '50');
 
   let results = LOCALES_SEEDS;
 

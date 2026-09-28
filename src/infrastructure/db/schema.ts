@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, boolean, jsonb, timestamp, doublePrecision, integer } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, boolean, jsonb, timestamp, doublePrecision } from 'drizzle-orm/pg-core';
 import type { HalalStatus, IngredientConflict } from '@/domain/classification/types';
 
 export const products = pgTable('products', {
